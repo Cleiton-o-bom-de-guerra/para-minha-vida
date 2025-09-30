@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para a Minha Vida</title>
+  <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #ffe4f0;
+      color: #333;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-family: 'Satisfy', cursive;
+      font-size: 3em;
+      color: #c71585;
+      margin-bottom: 10px;
+    }
+    .slideshow {
+      max-width: 90%;
+      margin: 20px auto;
+    }
+    .slide-img {
+      display: none;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .declaracao {
+      font-size: 1.2em;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .declaracao h2 {
+      font-family: 'Satisfy', cursive;
+      color: #c71585;
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+    audio {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Para a Minha Vida</h1>
+
+  <div class="slideshow">
+    <img class="slide-img" src="1.jpg" alt="Foto 1">
+    <img class="slide-img" src="2.jpg" alt="Foto 2">
+    <img class="slide-img" src="3.jpg" alt="Foto 3">
+    <img class="slide-img" src="4.jpg" alt="Foto 4">
+    <img class="slide-img" src="5.jpg" alt="Foto 5">
+    <img class="slide-img" src="6.jpg" alt="Foto 6">
+    <img class="slide-img" src="7.jpg" alt="Foto 7">
+    <img class="slide-img" src="8.jpg" alt="Foto 8">
+    <img class="slide-img" src="9.jpg" alt="Foto 9">
+    <img class="slide-img" src="10.jpg" alt="Foto 10">
+    <img class="slide-img" src="11.jpg" alt="Foto 11">
+    <img class="slide-img" src="12.jpg" alt="Foto 12">
+  </div>
+
+  <div class="declaracao">
+    <h2>Minha declaração pra você 💖</h2>
+    <p>
+      Nestes dois anos ao seu lado, descobri que a felicidade tem nome, sorriso e olhar.<br><br>
+      Você, amor, é a mulher que cresce e floresce a cada dia, e eu me orgulho em silêncio e em voz alta por tudo o que tem se tornado.<br><br>
+      Cada detalhe em você é um convite para que eu me apaixone outra vez — e eu aceito, todos os dias.<br><br>
+      Sou um homem de sorte, porque o teu amor é só meu, e nele encontro cura, luz e força.<br><br>
+      Você é o meu poema vivo, minha paz e minha coragem.<br><br>
+      E por mais que as palavras tentem, jamais alcançarão o tamanho do meu amor por você. ❤️
+    </p>
+  </div>
+
+  <audio controls autoplay>
+    <source src="musica.mp3" type="audio/mpeg">
+    Seu navegador não suporta o elemento de áudio.
+  </audio>
+
+  <script>
+    let slideIndex = 0;
+    const slides = document.getElementsByClassName("slide-img");
+
+    function showSlides() {
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1; }
+      slides[slideIndex - 1].style.display = "block";
+      setTimeout(showSlides, 5000);
+    }
+
+    showSlides();
+  </script>
+</body>
+</html>
