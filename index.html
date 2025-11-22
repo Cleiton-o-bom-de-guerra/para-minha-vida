@@ -149,7 +149,7 @@
     const player = document.getElementById("player");
     const nextChapterBtn = document.getElementById("nextChapter");
 
-    function loadChapter(index) {
+    function loadChapter(index, autoPlay = false) {
       currentChapterIndex = (index + chapters.length) % chapters.length;
       const chap = chapters[currentChapterIndex];
 
@@ -168,9 +168,8 @@
       capInfo.textContent = `Capítulo ${chap.id} de ${chapters.length}`;
 
       // Música
-      const wasPlaying = !player.paused;
       player.src = chap.music;
-      if (wasPlaying || currentChapterIndex === 0) {
+      if (autoPlay) {
         player.play().catch(() => {});
       }
 
@@ -212,12 +211,12 @@
     // Botão Próximo Capítulo (sem voltar)
     nextChapterBtn.addEventListener("click", () => {
       const nextIndex = (currentChapterIndex + 1) % chapters.length;
-      loadChapter(nextIndex);
+      loadChapter(nextIndex, true); // troca capítulo e já dá play na música
     });
 
-    // Inicializa no capítulo 1
+    // Inicializa no capítulo 1 (sem tocar a música ainda)
     window.addEventListener("load", () => {
-      loadChapter(0);
+      loadChapter(0, false);
     });
   </script>
 </body>
