@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -18,6 +17,7 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
+      transition: background-color 0.6s ease;
     }
     h1 {
       font-family: 'Satisfy', cursive;
@@ -49,9 +49,39 @@
       color: #c71585;
       font-size: 2em;
       margin-bottom: 10px;
+      transition: color 0.4s ease;
+    }
+    .declaracao p {
+      transition: opacity 0.4s ease;
+    }
+    .controls {
+      margin-top: 20px;
     }
     audio {
-      margin-top: 20px;
+      margin-top: 10px;
+    }
+    #nextChapter {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: none;
+      background: #c71585;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s ease;
+    }
+    #nextChapter:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      background: #a4116d;
+    }
+    #capInfo {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -59,53 +89,136 @@
 
   <h1>Para a Minha Vida</h1>
 
-  <div class="slideshow">
-    <img class="slide-img" src="1.jpg" alt="Foto 1">
-    <img class="slide-img" src="2.jpg" alt="Foto 2">
-    <img class="slide-img" src="3.jpg" alt="Foto 3">
-    <img class="slide-img" src="4.jpg" alt="Foto 4">
-    <img class="slide-img" src="5.jpg" alt="Foto 5">
-    <img class="slide-img" src="6.jpg" alt="Foto 6">
-    <img class="slide-img" src="7.jpg" alt="Foto 7">
-    <img class="slide-img" src="8.jpg" alt="Foto 8">
-    <img class="slide-img" src="9.jpg" alt="Foto 9">
-    <img class="slide-img" src="10.jpg" alt="Foto 10">
-    <img class="slide-img" src="11.jpg" alt="Foto 11">
-    <img class="slide-img" src="12.jpg" alt="Foto 12">
-  </div>
+  <div class="slideshow" id="slideshow"></div>
 
   <div class="declaracao">
-    <h2>Minha declaração pra você 💖</h2>
-    <p>
-      Nestes dois anos ao seu lado, descobri que a felicidade tem nome, sorriso e olhar.<br><br>
-      Você, amor, é a mulher que cresce e floresce a cada dia, e eu me orgulho em silêncio e em voz alta por tudo o que tem se tornado.<br><br>
-      Cada detalhe em você é um convite para que eu me apaixone outra vez — e eu aceito, todos os dias.<br><br>
-      Sou um homem de sorte, porque o teu amor é só meu, e nele encontro cura, luz e força.<br><br>
-      Você é o meu poema vivo, minha paz e minha coragem.<br><br>
-      E por mais que as palavras tentem, jamais alcançarão o tamanho do meu amor por você. ❤️
-    </p>
+    <h2 id="tituloDeclaracao">Minha declaração pra você 💖</h2>
+    <p id="textoDeclaracao"></p>
   </div>
 
-  <audio controls autoplay>
-    <source src="musica.mp3" type="audio/mpeg">
-    Seu navegador não suporta o elemento de áudio.
-  </audio>
+  <div class="controls">
+    <audio id="player" controls></audio>
+    <div>
+      <button id="nextChapter">Próximo capítulo ▶️</button>
+      <div id="capInfo"></div>
+    </div>
+  </div>
 
   <script>
+    // CAPÍTULOS
+    // Cada capítulo: 12 fotos, 1 música, 1 frase, 1 tema
+    const chapters = [
+      {
+        id: 1,
+        photos: [1,2,3,4,5,6,7,8,9,10,11,12],
+        music: "música.mp3", // nome do arquivo COM acento
+        theme: "#ffe4f0",
+        title: "Minha declaração pra você 💖",
+        text: `
+          Nestes dois anos ao seu lado, descobri que a felicidade tem nome, sorriso e olhar.<br><br>
+          Você, amor, é a mulher que cresce e floresce a cada dia, e eu me orgulho em silêncio e em voz alta por tudo o que tem se tornado.<br><br>
+          Cada detalhe em você é um convite para que eu me apaixone outra vez — e eu aceito, todos os dias.<br><br>
+          Sou um homem de sorte, porque o teu amor é só meu, e nele encontro cura, luz e força.<br><br>
+          Você é o meu poema vivo, minha paz e minha coragem.<br><br>
+          E por mais que as palavras tentem, jamais alcançarão o tamanho do meu amor por você. ❤️
+        `
+      },
+      {
+        id: 2,
+        photos: [13,14,15,16,17,18,19,20,21,22,23,24],
+        music: "musica2.mp3",
+        theme: "#a8d8ff", // azul suave
+        title: "Mais um mês ao teu lado 💙",
+        text: `
+          Eu continuo te escolhendo mesmo nos dias difíceis.<br><br>
+          Nosso amor não é feito só de fotos bonitas —<br>
+          é feito da nossa vontade de continuar. 💙
+        `
+      }
+    ];
+
+    let currentChapterIndex = 0;
     let slideIndex = 0;
-    const slides = document.getElementsByClassName("slide-img");
+    let slideTimer = null;
+
+    const body = document.body;
+    const slideshow = document.getElementById("slideshow");
+    const tituloDeclaracao = document.getElementById("tituloDeclaracao");
+    const textoDeclaracao = document.getElementById("textoDeclaracao");
+    const capInfo = document.getElementById("capInfo");
+    const player = document.getElementById("player");
+    const nextChapterBtn = document.getElementById("nextChapter");
+
+    function loadChapter(index) {
+      currentChapterIndex = (index + chapters.length) % chapters.length;
+      const chap = chapters[currentChapterIndex];
+
+      // Tema
+      body.style.backgroundColor = chap.theme;
+
+      // Declaração
+      tituloDeclaracao.textContent = chap.title;
+      textoDeclaracao.style.opacity = 0;
+      setTimeout(() => {
+        textoDeclaracao.innerHTML = chap.text;
+        textoDeclaracao.style.opacity = 1;
+      }, 200);
+
+      // Info de capítulo
+      capInfo.textContent = `Capítulo ${chap.id} de ${chapters.length}`;
+
+      // Música
+      const wasPlaying = !player.paused;
+      player.src = chap.music;
+      if (wasPlaying || currentChapterIndex === 0) {
+        player.play().catch(() => {});
+      }
+
+      // Slides
+      slideshow.innerHTML = "";
+      chap.photos.forEach(num => {
+        const img = document.createElement("img");
+        img.className = "slide-img";
+        img.src = num + ".jpg";
+        img.alt = "Foto " + num;
+        slideshow.appendChild(img);
+      });
+
+      // Reinicia slideshow
+      slideIndex = 0;
+      startSlideshow();
+    }
 
     function showSlides() {
+      const slides = document.getElementsByClassName("slide-img");
+      if (!slides.length) return;
+
       for (let i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
       }
+
       slideIndex++;
       if (slideIndex > slides.length) { slideIndex = 1; }
       slides[slideIndex - 1].style.display = "block";
-      setTimeout(showSlides, 5000);
+
+      slideTimer = setTimeout(showSlides, 5000); // 5 segundos
     }
 
-    showSlides();
+    function startSlideshow() {
+      if (slideTimer) clearTimeout(slideTimer);
+      showSlides();
+    }
+
+    // Botão Próximo Capítulo (sem voltar)
+    nextChapterBtn.addEventListener("click", () => {
+      const nextIndex = (currentChapterIndex + 1) % chapters.length;
+      loadChapter(nextIndex);
+    });
+
+    // Inicializa no capítulo 1
+    window.addEventListener("load", () => {
+      loadChapter(0);
+    });
   </script>
 </body>
 </html>
